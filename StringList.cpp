@@ -1,4 +1,4 @@
-﻿#include "StringList.h"
+#include "StringList.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -49,13 +49,9 @@ void StringList::buildFromString(const std::string& s) {
     // 清空链表
     freeNodes(head);
     head = nullptr;
-
-    //if (!s.empty()) {
-    //    // 直接创建包含整个字符串的节点（不再按空格分割）
-    //    head = new StringNode(s);
-    //}
-
     if (!s.empty()) {
+        // 调试输出字符串内容
+        std::cout << "[DEBUG] 构建字符串: " << s << " (长度: " << s.size() << ")\n";
         try {
             head = new StringNode(s);
         }
@@ -86,16 +82,7 @@ bool StringList::equals(const StringList& other) const {//接收一个 const Str
 
 // 连接另一个链表到当前链表
 void StringList::concatenate(const StringList& other) {
-    /*if (!head) {
-        head = other.head; // 这里直接赋值，会导致所有权问题
-    }
-    else {
-        StringNode* current = head;
-        while (current->next) {
-            current = current->next;
-        }
-        current->next = other.head;
-    }*/
+   
     //StringNode* current = head;
     std::mutex listMutex;  // 添加互斥锁成员
     std::lock_guard<std::mutex> guard(listMutex);  // 加锁
@@ -127,19 +114,7 @@ void StringList::concatenate(const StringList& other) {
         }
     }
 }
-// 获取链表表示字符串的长度
-//int StringList::getLength() const {
-//    int length = 0;
-//    StringNode* current = head;
-//    while (current) {
-//        //length += current->data.size();
-//        if (current) {  // 再次确认指针有效
-//            length += current->data.size();
-//        }
-//        current = current->next;
-//    }
-//    return length;
-//}
+
 int StringList::getLength() const {
     int length = 0;
     StringNode* current = head;
@@ -218,8 +193,8 @@ StringList StringList::getSubList(int start, int len) const {
 
 
 int StringList::findSubList(const StringList& sub) const {
-
-
+    
+    
     if (sub.head == nullptr) return -1;  // 空子串直接返回
 
     StringNode* current = head;
@@ -271,50 +246,7 @@ int StringList::findSubList(const StringList& sub) const {
 
     return -1;
 }
-//替换子链表
-//int StringList::findSubList(const StringList& sub) const {
-//    if (sub.head == nullptr) return -1;
-//
-//    StringNode* current = head;
-//    int globalPos = 0;
-//
-//    while (current != nullptr) {
-//        std::string currentData = current->data;
-//        size_t dataLength = currentData.size();
-//
-//        // 遍历所有可能的起始位置（包括跨节点）
-//        for (size_t i = 0; i < dataLength; ++i) {  // 修改循环条件
-//            bool match = true;
-//            StringNode* subCurrent = sub.head;
-//            size_t tempPos = i;
-//            StringNode* tempNode = current;
-//
-//            while (subCurrent != nullptr && tempNode != nullptr) {
-//                std::string subStr = subCurrent->data;
-//                if (tempPos + subStr.size() > tempNode->data.size()) {
-//                    match = false;
-//                    break;
-//                }
-//                if (tempNode->data.substr(tempPos, subStr.size()) != subStr) {
-//                    match = false;
-//                    break;
-//                }
-//                tempPos = 0;
-//                subCurrent = subCurrent->next;
-//                tempNode = tempNode->next;
-//            }
-//
-//            if (match && subCurrent == nullptr) {
-//                return globalPos + static_cast<int>(i);
-//            }
-//        }
-//
-//        globalPos += static_cast<int>(currentData.size());
-//        current = current->next;
-//    }
-//
-//    return -1;
-//}
+
 
 bool StringList::replaceSubList(const StringList& oldSub, const StringList& newSub) {
     if (oldSub.head == nullptr || oldSub.getLength() == 0) {
@@ -424,7 +356,6 @@ bool StringList::replaceSubList(const StringList& oldSub, const StringList& newS
 
     return replaced;
 }
-// 保存链表内容到文件
 bool StringList::saveToFile(const std::string& filename) const {
     std::ofstream file(filename);
     if (file.is_open()) {
